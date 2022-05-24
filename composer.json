@@ -1,0 +1,17 @@
+{
+    "name": "gasmx/filesystem-cache",
+    "description": "A lightweight and simple PHP package with zero dependencies for caching using filesystem",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Gabriel Angelus",
+            "email": "gangeluscf@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Gasmx\\": "src/"
+        }
+    }
+}
