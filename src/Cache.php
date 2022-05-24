@@ -6,7 +6,7 @@
  * https://github.com/gasmx/filesystem-cache 
  * Feel free to contribute 🚀
  * 
- * @author Gabriel Angelus
+ * @author Gabriel Angelus https://github.com/gasmx
  */
 
 namespace Gasmx;

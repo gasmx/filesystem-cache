@@ -2,6 +2,7 @@
     "name": "gasmx/filesystem-cache",
     "description": "A lightweight and simple PHP package with zero dependencies for caching using filesystem",
     "type": "library",
+    "license": "MIT",
     "authors": [
         {
             "name": "Gabriel Angelus",
