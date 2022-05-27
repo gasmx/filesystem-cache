@@ -15,7 +15,8 @@ trait CacheProps
 	// Magic method invoked when file is included
 	public static function __set_state($data)
 	{
-		$self = new self;
+        	$class = get_called_class();
+		$self = new $class;
 		$self->setState($data);
 		return $self;
 	}
