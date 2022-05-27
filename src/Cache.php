@@ -26,20 +26,30 @@ class Cache
     private $options;
     // Instance created to store options
     private $optionsInstance;
+    // Function to format a value before return
+    private $beforeGetFunction;
+    // Function to format a value before set in cache
+    private $beforeSetFunction;
 
-    // Singleton used to isolate items by domain
+    // Used to isolate items by domain
     static $preffix;
     // Singleton instance created to store the item
     static $instance;
-    // Singleton for cache dir
+    // Cache dir
     static $staticDir = 'tmp';
-    // Single used to store in human readable format
-    static $prettyPrint = true;    
+    // Used to store in human readable format
+    static $prettyPrint = true;
+    // Used to format a value before return from cache
+    static $staticBeforeGetFunction;
+    // Used to format a value before set in cache
+    static $staticBeforeSetFunction;
 
     private function __construct($key, $createOptionsFile = true)
     {
         $this->key = $key;
         $this->dir = self::$staticDir . '/';
+        $this->beforeGetFunction = self::$staticBeforeGetFunction;
+        $this->beforeSetFunction = self::$staticBeforeSetFunction;
 
         // Create default options for the item
         $this->options = [
@@ -79,6 +89,16 @@ class Cache
         return self::$instance[$key];
     }
 
+    public static function beforeGet(callable $function)
+    {
+        self::$staticBeforeGetFunction = $function;
+    }
+
+    public static function beforeSet(callable $function)
+    {
+        self::$staticBeforeSetFunction = $function;
+    }
+
     public static function setDirectory($dirname)
     {
         self::$staticDir = $dirname;
@@ -102,6 +122,10 @@ class Cache
         // Do nothing if item is locked
         if ($this->options['lock'] === true) { 
             return $this;
+        }
+
+        if ($this->optionsInstance && $function = $this->beforeSetFunction) {
+            $val = $function($val);
         }
 
         // Retrieve cached item
@@ -145,7 +169,16 @@ class Cache
 
         // Retrieve item and return it
         include $this->dir . "$this->key";
-        return isset($val) ? $val : false;
+
+        if (isset($val)) {
+            if ($this->optionsInstance && $function = $this->beforeGetFunction) {
+                $val = $function($val);
+            }
+
+            return $val;
+        }
+
+        return false;
     }
 
     public function getOptions()
