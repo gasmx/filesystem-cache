@@ -146,16 +146,22 @@ class Cache
         rename($tmp, $this->dir . $key);
 
         // Set expiry time
-        if ($secondsToExpire) {
-            $this->options['expiry'] = time() + $secondsToExpire;
-        }
+        if (!is_null($secondsToExpire) || !is_null($lock)) {
+            $newOptions = [
+                'expiry' => -1,
+                'lock' => false
+            ];
 
-        // Set lock state
-        if (is_bool($lock)) {
-            $this->options['lock'] = $lock;
-        }
+            if (!is_null($secondsToExpire)) {
+                $newOptions['expiry'] = time() + $secondsToExpire;
+            }
 
-        $this->saveOptions();
+            if (!is_null($lock) && is_bool($lock)) {
+                $newOptions['lock'] = $lock;
+            }
+
+            $this->options($newOptions);
+        }
  
         return $this;
     }
